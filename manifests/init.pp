@@ -34,12 +34,15 @@ class nodejs (
   exec { "Retrieve ${url}":
     command => "wget ${url} -O /tmp/${namestr}.tar.gz",
     creates => "/tmp/${namestr}.tar.gz",
+    onlyif => "test ! -f /usr/bin/node || test $(node -v) != 'v${version}'",
+    notify => Exec["Inflate"],
     path => $path
   }
 
   exec { "Inflate":
     command => "tar -zxf /tmp/${namestr}.tar.gz -C /tmp",
     creates => "/tmp/${namestr}",
+    refreshonly => true,
     require => Exec["Retrieve ${url}"],
     notify => Exec["Installing node v${version}"],
     path => $path
@@ -49,8 +52,17 @@ class nodejs (
     command => "cp -rf /tmp/${namestr}/bin/node /usr/bin/node && cp -rf /tmp/${namestr}/lib/node_modules /usr/lib/",
     require => Exec["Inflate"],
     refreshonly => true,
+    notify => Exec["Cleanup"],
     path => $path
   }
+
+  exec { "Cleanup":
+    command => "rm -rf /tmp/node-v*-linux-x64*",
+    require => Exec["Inflate"],
+    refreshonly => true,
+    path => $path
+  }
+
   file { '/usr/bin/npm':
     owner => 'root',
     group => 'root',
