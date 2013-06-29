@@ -46,10 +46,17 @@ class nodejs (
   }
 
   exec { "Installing node v${version}":
-    command => "cp -rf /tmp/${namestr}/bin/node /usr/bin/node && cp -rf /tmp/${namestr}/lib/node_modules/npm /usr/lib/node_modules/npm",
+    command => "cp -rf /tmp/${namestr}/bin/node /usr/bin/node && cp -rf /tmp/${namestr}/lib/node_modules /usr/lib/",
     require => Exec["Inflate"],
     refreshonly => true,
     path => $path
   }
-}
+  file { '/usr/bin/npm':
+    owner => 'root',
+    group => 'root',
+    ensure => 'link',
+    target => '../lib/node_modules/npm/bin/npm-cli.js',
+    require => Exec["Installing node v${version}"]
+  }
 
+}
