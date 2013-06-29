@@ -1,16 +1,20 @@
-nodejs
+nodejs puppet module
 
-This is the nodejs module.
+This is the nodejs module. It works by directly downloading the node and npm binaries from nodejs.org
 
 License
 -------
+
+Apache 2
 
 
 Contact
 -------
 
+thom@nightworld.com
+
 
 Support
 -------
 
-Please log tickets and issues at our [Projects site](http://projects.example.com)
+Please log tickets and issues on github: (https://github.com/thomseddon/puppet-nodejs/issues)
